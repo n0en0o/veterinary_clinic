@@ -1,1 +1,7 @@
 * linguist-language=Go
+
+*.js linguist-language=JavaScript linguist-detectable=true
+*.html linguist-language=HTML linguist-detectable=true
+*.css linguist-language=CSS linguist-detectable=true
+
+*.yml linguist-language=YAML linguist-detectable=true

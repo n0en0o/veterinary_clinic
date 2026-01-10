@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ветеринарная клиника - Мониторинг здоровья животных</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>🐾 Ветеринарная клиника</h1>
+        <p>Система мониторинга здоровья животных</p>
+      </header>
+
+      <nav>
+        <button onclick="showSection('pets')">Все питомцы</button>
+        <button onclick="showSection('owners')">Владельцы</button>
+        <button onclick="showSection('add-owner')">Добавить владельца</button>
+        <button onclick="showSection('add-pet')">Добавить питомца</button>
+        <button onclick="showSection('add-record')">Добавить запись</button>
+      </nav>
+
+      <main>
+        <section id="pets-section" class="section active">
+          <h2>Все питомцы</h2>
+          <div id="pets-list" class="cards-container"></div>
+        </section>
+
+        <section id="owners-section" class="section">
+          <h2>Владельцы</h2>
+          <div id="owners-list" class="cards-container"></div>
+        </section>
+
+        <section id="add-owner-section" class="section">
+          <h2>Добавить нового владельца</h2>
+          <form id="add-owner-form" class="form">
+            <div class="form-group">
+              <input
+                type="text"
+                name="first_name"
+                placeholder="Имя *"
+                required
+              />
+              <input
+                type="text"
+                name="last_name"
+                placeholder="Фамилия *"
+                required
+              />
+            </div>
+            <input type="email" name="email" placeholder="Email *" required />
+            <input type="text" name="phone" placeholder="Телефон" />
+            <textarea name="address" placeholder="Адрес" rows="3"></textarea>
+            <button type="submit">Добавить владельца</button>
+            <button
+              type="button"
+              onclick="showSection('owners')"
+              class="cancel-btn"
+            >
+              Отмена
+            </button>
+          </form>
+        </section>
+
+        <section id="add-pet-section" class="section">
+          <h2>Добавить нового питомца</h2>
+          <form id="add-pet-form" class="form">
+            <input type="text" name="name" placeholder="Имя питомца" required />
+            <select name="species" required>
+              <option value="">Выберите вид</option>
+              <option value="Собака">Собака</option>
+              <option value="Кошка">Кошка</option>
+              <option value="Птица">Птица</option>
+              <option value="Грызун">Грызун</option>
+              <option value="Рептилия">Рептилия</option>
+              <option value="Другое">Другое</option>
+            </select>
+            <input type="text" name="breed" placeholder="Порода" />
+            <input
+              type="date"
+              name="date_of_birth"
+              placeholder="Дата рождения"
+            />
+            <input type="text" name="color" placeholder="Окрас" />
+            <input
+              type="text"
+              name="microchip_id"
+              placeholder="Номер микрочипа"
+            />
+            <select name="owner_id" id="owner-select" required>
+              <option value="">Выберите владельца</option>
+            </select>
+            <button type="submit">Добавить питомца</button>
+          </form>
+        </section>
+
+        <section id="add-record-section" class="section">
+          <h2>Добавить запись о здоровье</h2>
+          <form id="add-record-form" class="form">
+            <select name="pet_id" id="pet-select" required>
+              <option value="">Выберите питомца</option>
+            </select>
+            <input type="date" name="visit_date" required />
+            <input
+              type="number"
+              step="0.1"
+              name="weight"
+              placeholder="Вес (кг)"
+            />
+            <input
+              type="number"
+              step="0.1"
+              name="temperature"
+              placeholder="Температура"
+            />
+            <input type="number" name="heart_rate" placeholder="Пульс" />
+            <input
+              type="number"
+              name="respiratory_rate"
+              placeholder="Дыхание"
+            />
+            <textarea name="notes" placeholder="Заметки врача"></textarea>
+            <textarea name="diagnosis" placeholder="Диагноз"></textarea>
+            <textarea name="treatment" placeholder="Лечение"></textarea>
+            <input
+              type="date"
+              name="next_visit_date"
+              placeholder="Следующий визит"
+            />
+            <button type="submit">Добавить запись</button>
+          </form>
+        </section>
+
+        <section id="pet-detail-section" class="section" style="display: none">
+          <button onclick="showSection('pets')" class="back-btn">
+            ← Назад
+          </button>
+          <div id="pet-detail"></div>
+          <div id="health-chart-container">
+            <canvas id="health-chart"></canvas>
+          </div>
+          <div id="health-records"></div>
+        </section>
+
+        <section
+          id="owner-detail-section"
+          class="section"
+          style="display: none"
+        >
+          <button onclick="showSection('owners')" class="back-btn">
+            ← Назад
+          </button>
+          <div id="owner-detail"></div>
+          <div id="owner-pets"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

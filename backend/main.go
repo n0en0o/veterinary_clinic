@@ -10,8 +10,8 @@ import (
 	"strconv"
 	"time"
 
-	"my-docker-app/graphics"
-	"my-docker-app/models"
+	"my-docker-app/backend/graphics"
+	"my-docker-app/backend/models"
 
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
@@ -146,7 +146,7 @@ func (a *App) createOwner(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	if err := owner.createOwner(a.DB); err != nil {
+	if err := owner.CreateOwner(a.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -205,7 +205,7 @@ func (a *App) createPet(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	if err := pet.createPet(a.DB); err != nil {
+	if err := pet.CreatePet(a.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -239,7 +239,7 @@ func (a *App) createHealthRecord(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	if err := record.createHealthRecord(a.DB); err != nil {
+	if err := record.CreateHealthRecord(a.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -271,14 +271,6 @@ func getOwner(db *sql.DB, id int) (models.Owner, error) {
 	err := db.QueryRow("SELECT id, first_name, last_name, email, phone, address, created_at FROM owners WHERE id = $1", id).
 		Scan(&owner.ID, &owner.FirstName, &owner.LastName, &owner.Email, &owner.Phone, &owner.Address, &owner.CreatedAt)
 	return owner, err
-}
-
-func (owner *models.Owner) createOwner(db *sql.DB) error {
-	err := db.QueryRow(
-		"INSERT INTO owners(first_name, last_name, email, phone, address) VALUES($1, $2, $3, $4, $5) RETURNING id",
-		owner.FirstName, owner.LastName, owner.Email, owner.Phone, owner.Address,
-	).Scan(&owner.ID)
-	return err
 }
 
 func getPets(db *sql.DB) ([]models.Pet, error) {
@@ -337,13 +329,6 @@ func getPetsByOwner(db *sql.DB, ownerId int) ([]models.Pet, error) {
 	return pets, nil
 }
 
-func (pet *models.Pet) createPet(db *sql.DB) error {
-	err := db.QueryRow(
-		"INSERT INTO pets(owner_id, name, species, breed, date_of_birth, color, microchip_id) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id",
-		pet.OwnerID, pet.Name, pet.Species, pet.Breed, pet.DateOfBirth, pet.Color, pet.MicrochipID,
-	).Scan(&pet.ID)
-	return err
-}
 
 func getHealthRecords(db *sql.DB, petId int) ([]models.HealthRecord, error) {
 	rows, err := db.Query(`
@@ -366,13 +351,6 @@ func getHealthRecords(db *sql.DB, petId int) ([]models.HealthRecord, error) {
 	return records, nil
 }
 
-func (record *models.HealthRecord) createHealthRecord(db *sql.DB) error {
-	err := db.QueryRow(
-		"INSERT INTO health_records(pet_id, visit_date, weight, temperature, heart_rate, respiratory_rate, notes, diagnosis, treatment, next_visit_date) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id",
-		record.PetID, record.VisitDate, record.Weight, record.Temperature, record.HeartRate, record.RespiratoryRate, record.Notes, record.Diagnosis, record.Treatment, record.NextVisitDate,
-	).Scan(&record.ID)
-	return err
-}
 
 func (a *App) getPetChart(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
@@ -394,7 +372,7 @@ func (a *App) getPetChart(w http.ResponseWriter, r *http.Request) {
     }
 
 	w.Header().Set("Content-Type", "text/html")
-	
+
 	graphics.DrawPetHealthChart(records, w)
 
 }

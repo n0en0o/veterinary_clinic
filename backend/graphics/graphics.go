@@ -2,7 +2,7 @@ package graphics
 
 import (
 	"io"
-	"my-docker-app/models"
+	"my-docker-app/backend/models"
 
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/opts"

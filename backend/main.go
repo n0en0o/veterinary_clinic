@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"time"
 
+	"my-docker-app/graphics"
 	"my-docker-app/models"
 
 	"github.com/gorilla/mux"
@@ -373,7 +374,30 @@ func (record *models.HealthRecord) createHealthRecord(db *sql.DB) error {
 	return err
 }
 
-func (a *App) getPetChart(w http.ResponseWriter, r *http.Request) {}
+func (a *App) getPetChart(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	petId, err := strconv.Atoi(vars["petId"])
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid pet ID")
+		return
+	}
+
+	records, err := getHealthRecords(a.DB, petId)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if len(records) == 0 {
+        respondWithError(w, http.StatusNotFound, "Для этого питомца еще нет записей о здоровье")
+        return
+    }
+
+	w.Header().Set("Content-Type", "text/html")
+	
+	graphics.DrawPetHealthChart(records, w)
+
+}
 
 //вспомогательные функции
 func respondWithError(w http.ResponseWriter, code int, message string) {

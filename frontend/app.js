@@ -155,6 +155,7 @@ async function showPetDetail(petId) {
     document.querySelectorAll(".section").forEach((section) => {
       section.classList.remove("active");
     });
+
     document.getElementById("pet-detail-section").classList.add("active");
   } catch (error) {
     console.error("Error loading pet detail:", error);
@@ -250,6 +251,7 @@ async function showOwnerDetail(ownerId) {
     document.querySelectorAll(".section").forEach((section) => {
       section.classList.remove("active");
     });
+
     document.getElementById("owner-detail-section").classList.add("active");
   } catch (error) {
     console.error("Error loading owner detail:", error);
@@ -295,9 +297,11 @@ function showHealthChart(records) {
   );
 
   const dates = sortedRecords.map((record) => formatDate(record.visit_date));
+
   const weights = sortedRecords
     .map((record) => record.weight)
     .filter((w) => w != null);
+
   const temperatures = sortedRecords
     .map((record) => record.temperature)
     .filter((t) => t != null);
